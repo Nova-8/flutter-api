@@ -4,11 +4,13 @@ import 'package:pokemonapi/model/network/network.dart';
 
 class HomeController extends GetxController {
   Pokemon? _pokemon;
-  final List<Result> _pokemons = [];
+  List<Result>? _pokemons = [];
   bool _loading = false;
+  int limit = 20;
+  int offset = 0;
 
   Pokemon? get pokemon => _pokemon;
-  List<Result> get pokemons => _pokemons;
+  List<Result?>? get pokemons => _pokemons;
   bool get loading => _loading;
 
   @override
@@ -20,14 +22,20 @@ class HomeController extends GetxController {
 
   void _getPokemons() async {
     _loading = true;
-    update(['ListPokemons']);
-    Map<String, String> params = {'limit': '20', 'offset': '20'};
+    update();
+    Map<String, String> params = {
+      'limit': limit.toString(),
+      'offset': offset.toString(),
+    };
 
     final network = Network();
-    var a = await network.getListaPokemons(params: params);
-    _pokemon = a;
-    if (_pokemon != null) {}
+    _pokemon = await network.getListaPokemons(params: params);
+    if (_pokemon != null) {
+      if (_pokemon!.results! != null) {
+        this._pokemons = pokemon!.results!;
+      }
+    }
     _loading = false;
-    update(['ListPokemons']);
+    update();
   }
 }

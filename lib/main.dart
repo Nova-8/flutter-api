@@ -13,8 +13,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'PokemonApi',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        appBarTheme: AppBarTheme(
+          centerTitle: true,
+          color: Colors.transparent,
+        ),
       ),
       initialRoute: '/',
       getPages: routes,
