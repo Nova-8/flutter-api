@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pokemonapi/model/home/pokemon.dart';
+import 'package:pokemonapi/model/home/pokemon_selected.dart';
 import 'package:pokemonapi/model/network/network.dart';
 
 class HomeController extends GetxController {
   Pokemon? _pokemon;
   List<Result>? _pokemons = [];
+  List<PokemonSelected> _pokemonsSelects = [];
   bool _loading = false;
   bool _loadingList = false;
   final ScrollController _scrollController = ScrollController();
@@ -15,6 +17,7 @@ class HomeController extends GetxController {
 
   Pokemon? get pokemon => _pokemon;
   List<Result?>? get pokemons => _pokemons;
+  List<PokemonSelected> get pokemonsSelects => _pokemonsSelects;
   bool get loading => _loading;
   bool get loadingList => _loadingList;
   int get pokemonSelect => _pokemonSelects;
@@ -60,5 +63,22 @@ class HomeController extends GetxController {
     _loading = false;
     _loadingList = false;
     update();
+  }
+
+  void addToListPokemons(Result pokemon, int index) {
+    _pokemonsSelects.add(
+      PokemonSelected(
+        pokemon: pokemon,
+        index: index,
+      ),
+    );
+    update();
+  }
+
+  void deleteToListPokemons(PokemonSelected value) {
+    final index = _pokemonsSelects.indexOf(value);
+    _pokemonsSelects.removeAt(index);
+    update();
+    Navigator.pop(Get.context!);
   }
 }
