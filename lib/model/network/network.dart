@@ -17,6 +17,7 @@ class Network {
         .join('&');
 
     try {
+      debugPrint('-> ${EndPoint().baseUrlSearch}?$content');
       await http
           .get(
         Uri.parse('${EndPoint().baseUrlSearch}?$content'),

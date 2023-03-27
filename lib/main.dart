@@ -15,10 +15,18 @@ class MyApp extends StatelessWidget {
       title: 'PokemonApi',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        fontFamily: 'SFProMedium',
+        textTheme: const TextTheme(
+          bodyText1: TextStyle(
+            fontSize: 16,
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         primarySwatch: Colors.blue,
-        appBarTheme: AppBarTheme(
+        appBarTheme: const AppBarTheme(
           centerTitle: true,
-          color: Colors.transparent,
+          color: Colors.grey,
         ),
       ),
       initialRoute: '/',

@@ -10,7 +10,7 @@ class SplashController extends GetxController {
 
     Future.delayed(
       const Duration(
-        seconds: 4,
+        seconds: 3,
       ),
       () {
         Get.offNamed('/home');
