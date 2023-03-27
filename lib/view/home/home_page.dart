@@ -4,7 +4,8 @@ import 'package:get/get.dart';
 import 'package:pokemonapi/controller/home/home_controller.dart';
 import 'package:pokemonapi/model/colors.dart';
 import 'package:pokemonapi/model/end_point.dart';
-import 'package:pokemonapi/model/home/pokemon.dart';
+import 'package:pokemonapi/model/home/pokemon_detail.dart';
+import 'package:pokemonapi/model/home/pokemon_list.dart';
 import 'package:pokemonapi/model/home/pokemon_selected.dart';
 import 'package:pokemonapi/view/ui/loading_progress.dart';
 import 'package:skeletons/skeletons.dart';
@@ -81,10 +82,10 @@ class HomePage extends StatelessWidget {
               skeleton: SkeletonListView(),
               isLoading: _.loading,
               child: ListView.builder(
-                itemCount: _.pokemons!.length + 1,
+                itemCount: _.pokemons.length + 1,
                 controller: _.scrollController,
                 itemBuilder: (context, index) {
-                  if (index == _.pokemons!.length) {
+                  if (index == _.pokemons.length) {
                     if (_.loadingList) {
                       return const Padding(
                         padding: EdgeInsets.all(8.0),
@@ -96,7 +97,7 @@ class HomePage extends StatelessWidget {
                       return Container();
                     }
                   } else {
-                    Result pokemon = _.pokemons![index]!;
+                    PokemonList pokemon = _.pokemons[index];
                     return _buildCards(index + 1, pokemon, _);
                   }
                 },
@@ -108,12 +109,13 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildCards(int index, Result pokemon, HomeController _) {
+  Widget _buildCards(int index, PokemonList pokemon, HomeController _) {
     return Card(
       elevation: 5,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
+          mainAxisSize: MainAxisSize.max,
           children: [
             Row(
               children: [
@@ -142,10 +144,11 @@ class HomePage extends StatelessWidget {
                     horizontal: 20,
                   ),
                   child: Column(
+                    mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Nombre:  ${pokemon.name}',
+                        'Nombre:  ${pokemon.pokemon!.name}',
                         style: Theme.of(Get.context!).textTheme.bodyText1,
                       ),
                       Text(
@@ -155,20 +158,18 @@ class HomePage extends StatelessWidget {
                       const SizedBox(
                         height: 10,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Container(
-                            child: const Text('data'),
+                      if (pokemon.detail != null)
+                        SizedBox(
+                          width: 180,
+                          child: Wrap(
+                            spacing: 5,
+                            runAlignment: WrapAlignment.spaceBetween,
+                            verticalDirection: VerticalDirection.down,
+                            children: _createHabilities(pokemon.detail!),
                           ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          Container(
-                            child: const Text('data'),
-                          ),
-                        ],
-                      )
+                        )
+                      else
+                        Container(),
                     ],
                   ),
                 ),
@@ -180,7 +181,7 @@ class HomePage extends StatelessWidget {
                   ? _.pokemonsSelects.any((element) => element.index == index)
                       ? Center(
                           child: Text(
-                            'Este pokemon ya esta en tu equipo',
+                            'Ya esta en tu equipo',
                             style: Theme.of(Get.context!)
                                 .textTheme
                                 .bodyText1!
@@ -191,7 +192,8 @@ class HomePage extends StatelessWidget {
                         )
                       : MaterialButton(
                           color: Colors.redAccent,
-                          onPressed: () => _.addToListPokemons(pokemon, index),
+                          onPressed: () =>
+                              _.addToListPokemons(pokemon.pokemon!, index),
                           child: Text(
                             'Agregar a mi equipo',
                             style: Theme.of(Get.context!)
@@ -283,5 +285,22 @@ class HomePage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  List<Widget> _createHabilities(PokemonDetail detail) {
+    List<Widget> list = [];
+    if (detail.abilities != null) {
+      for (var element in detail.abilities!) {
+        list.add(
+          ChoiceChip(
+            label: Text(element.ability!.name),
+            elevation: 1,
+            selectedColor: Colors.grey,
+            selected: true,
+          ),
+        );
+      }
+    }
+    return list;
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:pokemonapi/model/end_point.dart';
 import 'package:pokemonapi/model/home/pokemon.dart';
+import 'package:pokemonapi/model/home/pokemon_detail.dart';
 
 class Network {
   Future<dynamic> getListaPokemons({
@@ -41,5 +42,25 @@ class Network {
       return null;
     }
     return objectResponse;
+  }
+
+  Future<dynamic> getDetailPokemons(String id) async {
+    PokemonDetail? objectResponse;
+    try {
+      var url = Uri.parse('${EndPoint().baseUrlSearch}/$id');
+      debugPrint('Url -> $url');
+      await http.get(url).then((response) {
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          objectResponse = PokemonDetail.fromJson(
+              jsonDecode(response.body.replaceAll('\'', '')));
+        } else {
+          objectResponse = null;
+        }
+      });
+      return objectResponse;
+    } catch (id) {
+      debugPrint(id.toString());
+      return null;
+    }
   }
 }
